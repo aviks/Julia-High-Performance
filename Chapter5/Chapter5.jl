@@ -15,20 +15,20 @@ myadd(x, y) = x + y
 @code_native myadd(1,2)
 
 
-julia> typemax(Int64)
+typemax(Int64)
 
 
-julia> bitstring(typemax(Int32))
+bitstring(typemax(Int32))
 
 
-julia> typemin(Int64)
+typemin(Int64)
 
-julia> bitstring(typemin(Int32))
+bitstring(typemin(Int32))
 
 
-julia> 9223372036854775806 + 1
+9223372036854775806 + 1
 
-julia> 9223372036854775806 + 1 + 1
+9223372036854775806 + 1 + 1
 
 2^64
 
@@ -36,14 +36,14 @@ julia> 9223372036854775806 + 1 + 1
 
 # ##BigInt
 
-julia> big(9223372036854775806) + 1 + 1
+big(9223372036854775806) + 1 + 1
 
-julia> big(2)^64
+big(2)^64
 
 # ## Floating Point
 
-julia> bitstring(2.5)
-julia> bitstring(-2.5)
+bitstring(2.5)
+bitstring(-2.5)
 
 # ##Unchecked conversions
 
@@ -83,3 +83,65 @@ t=rand(2000);
 macroexpand(Main, :(@fastmath a + b / c))
 
 # ## KBN Summation
+
+sum([1 1e-100 -1])
+
+using KahanSummation
+
+sum_kbn([1 1e-100 -1])
+
+
+t=[1, -1, 1e-100];
+
+@btime sum($t)
+
+
+@btime sum_kbn($t)
+
+# ## Subnormal numbers
+
+issubnormal(1.0)
+
+issubnormal(1.0e-308)
+
+3e-308 - 3.001e-308
+
+issubnormal(3e-308 - 3.001e-308)
+
+set_zero_subnormals(true)
+
+
+3e-308 - 3.001e-308
+
+3e-308 == 3.001e-308
+
+get_zero_subnormals()
+
+function timestep( b, a, dt )
+    n = length(b)
+    b[1] = 1
+    two = eltype(b)(2)
+    for i=2:n-1
+        b[i] = a[i] + (a[i-1] - two*a[i] + a[i+1]) * dt
+    end
+    b[n] = 0
+end
+
+function heatflow( a, nstep )
+    b = similar(a)
+    o = eltype(a)(0.1)
+    for t=1:div(nstep,2)
+        timestep(b,a,o)
+        timestep(a,b,o)
+    end
+end
+
+set_zero_subnormals(false)
+
+t=rand(1000);
+
+@btime heatflow($t, 1000)
+
+set_zero_subnormals(true)
+
+@btime heatflow($t, 1000)
