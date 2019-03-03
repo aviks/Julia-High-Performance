@@ -45,6 +45,34 @@ big(2)^64
 bitstring(2.5)
 bitstring(-2.5)
 
+function floatbits(x::Float64)
+   b = bitstring(x)
+   b[1:1]*"|"*b[2:12]*"|"*b[13:end]
+end
+
+floatbits(2.5)
+
+floatbits(-2.5)
+
+
+0.1 > 1//10
+
+
+Rational(0.1)
+
+float(big(Rational(0.1)))
+
+bitstring(0.10000000000000001) == bitstring(0.1)
+
+eps(0.1)
+
+nextfloat(0.1)
+
+floatbits(0.1)
+
+floatbits(nextfloat(0.1))
+
+
 # ##Unchecked conversions
 
 UInt64(1)
