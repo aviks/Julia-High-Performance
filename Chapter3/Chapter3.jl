@@ -1,6 +1,7 @@
 # # Chapter 1
 
 # ## Using Types
+using BenchmarkTools
 
 # Declare type of function argument
 iam(x::Integer) = "an integer"
@@ -47,22 +48,22 @@ p.x
 
 # immutable types
 
-immutable MPixel
+mutable struct MPixel
     x::Int64
     y::Int64
     color::Int64
 end
 
-julia> p = MPixel(5,5, 100)
+p = MPixel(5,5, 100)
 
-julia> p.x=10;
+p.x=10;
 
-julia> p.x
+p.x
 
 
 # TYpe Parameters
 
-type Pixel{T}
+struct ParamPixel{T}
     x::Int64
     y::Int64
     color::T
@@ -82,20 +83,19 @@ function pos(x)
    end
 end
 
-
-julia> pos(-1)
-
-
-julia> pos(-2.5)
+pos(-1)
 
 
-julia> pos(2.5)
+pos(-2.5)
 
 
-julia> typeof(pos(2.5))
+pos(2.5)
 
 
-julia> typeof(pos(-2.5))
+typeof(pos(2.5))
+
+
+typeof(pos(-2.5))
 
 function pos_fixed(x)
     if x < 0
@@ -105,13 +105,13 @@ function pos_fixed(x)
     end
 end
 
-julia> pos_fixed(-2.4)
+pos_fixed(-2.4)
 
-julia> pos_fixed(-2)
+pos_fixed(-2)
 
-julia> typeof(pos_fixed(-2.4))
+typeof(pos_fixed(-2.4))
 
-julia> typeof(pos_fixed(-2))
+typeof(pos_fixed(-2))
 
 @btime pos(2.5)
 @btime pos_fixed(2.5)
