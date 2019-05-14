@@ -63,7 +63,7 @@ p.x
 
 # TYpe Parameters
 
-struct ParamPixel{T}
+struct PPixel{T}
     x::Int64
     y::Int64
     color::T
@@ -190,7 +190,7 @@ end
 a = Int64[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 b = Number[1,2,3,4,5,6,7,8,9,10]
 
-function arr_sumsqr{T <: Number}(x::Array{T})
+function arr_sumsqr(x::Array{T}) where T <: Number
     r = zero(T)
     for i = 1:length(x)
         r = r + x[i] ^ 2
@@ -238,5 +238,8 @@ struct ParametricPoint{T <: AbstractFloat}
     x::T
     y::T
 end
+
+pp_array = [ParametricPoint(rand(), rand()) for i in 1:1000_000];
+
 
 @btime sumsqr_points(pp_array)

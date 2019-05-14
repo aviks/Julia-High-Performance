@@ -1,4 +1,5 @@
 # # Chapter 4
+using BenchmarkTools
 
 ##Globals
 
@@ -158,7 +159,7 @@ end
 
 prod_dim(rand(10, 5, 5))
 
-@generated function prod_dim_gen{T, N}(x::Array{T, N})
+@generated function prod_dim_gen(x::Array{T, N}) where {T, N}
      ex = :(1)
      for i = 1:N
           ex = :(size(x, $i) * $ex)
