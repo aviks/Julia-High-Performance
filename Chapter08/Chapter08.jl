@@ -100,7 +100,7 @@ put!(chnl, 2)
 close(chnl)
 
 using Pkg
-Pkg.add(Mux)
+Pkg.add("Mux")
 
 using Mux
 @app basicapp = (
