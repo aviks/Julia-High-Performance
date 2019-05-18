@@ -1,8 +1,7 @@
 using BenchmarkTools
 
-
 # ## Starting a Cluster
-
+using Distributed
 procs()
 
 # change to 2 if started julia with -p2
@@ -115,6 +114,10 @@ function distributed_pi(N, loops)
     4 * n / (loops * N)
 end
 
+function pi_serial(n)
+   return 4 * darts_in_circle(n) / n
+end
+
 
 @btime distributed_pi(1_000_000, 50)
 
@@ -190,7 +193,7 @@ end
 end
 
 
- A = DArray(I->rand(Bool, length.(I)), (20,20))
+A = DArray(I->rand(Bool, length.(I)), (20,20))
 
 using Pkg; Pkg.add("Colors")
 using Colors
@@ -198,3 +201,31 @@ using Colors
 
  B = Copy(A)
  B = Gray.(life_step(B))
+
+ # # Shared Arrays
+ using SharedArrays
+ S=SharedArray{Float64}((100, 100, 5), pids=[2,3, 4, 5]);
+
+
+ pmap(x->S[x]=myid(), eachindex(S));
+
+ S
+
+
+# ## Parallel Prefix sum
+
+function prefix_shared!(y::SharedArray)
+    l=length(y)
+    k=ceil(Int, log2(l))
+    for j=1:k
+        @sync @distributed for i=2^j:2^j:min(l, 2^k)
+            @inbounds y[i] = y[i-2^(j-1)] + y[i]
+        end
+    end
+    for j=(k-1):-1:1
+        @sync @distributed for i=3*2^(j-1):2^j:min(l, 2^k)
+            @inbounds y[i] = y[i-2^(j-1)] + y[i]
+        end
+    end
+    y
+end
