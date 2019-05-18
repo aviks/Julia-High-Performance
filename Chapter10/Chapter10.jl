@@ -129,3 +129,72 @@ using DistributedArrays
 d=dzeros(12, 12)
 x=rand(10,10);
 dx = distribute(x)
+
+@everywhere function par(I)
+    d=(size(I[1], 1), size(I[2], 1))
+    m = fill(myid(), d)
+    return m
+end
+
+
+m = DArray(par, (800, 800))
+
+d.indices
+
+r = @spawnat 2 localpart(d)
+
+
+fetch(r)
+
+
+@distributed (+) for i in 1:nworkers()
+           sum(localpart(m))
+       end
+
+# ### Game of Life
+
+
+function life_step(d::DArray)
+   DArray(size(d),procs(d)) do I
+      top = mod1(first(I[1])-1,size(d,1))  #outside edge
+      bot = mod1( last(I[1])+1,size(d,1))
+      left = mod1(first(I[2])-1,size(d,2))
+      right = mod1( last(I[2])+1,size(d,2))
+      old = Array{Bool}(undef, length(I[1])+2, length(I[2])+2) #temp array
+      old[1 , 1 ] = d[top , left]  #get from remote
+      old[2:end-1, 1 ] = d[I[1], left] # left
+      old[end , 1 ] = d[bot , left]
+      old[1 , end ] = d[top , right]
+      old[2:end-1, end ] = d[I[1], right] # right
+      old[end , end ] = d[bot , right]
+      old[1 , 2:end-1] = d[top , I[2]] # top
+      old[end , 2:end-1] = d[bot , I[2]] # bottom
+      old[2:end-1, 2:end-1] = d[I[1], I[2]] # middle (local)
+
+      life_rule(old) # Step!
+   end
+end
+
+@everywhere function life_rule(old)
+    m, n = size(old)
+    new = similar(old, m-2, n-2)
+    for j = 2:n-1
+        @inbounds for i = 2:m-1
+            nc = (+)(old[i-1,j-1], old[i-1,j], old[i-1,j+1],
+                     old[i ,j-1], old[i ,j+1],
+                     old[i+1,j-1], old[i+1,j], old[i+1,j+1])
+            new[i-1,j-1] = (nc == 3 || nc == 2 && old[i,j])
+        end
+    end
+    new
+end
+
+
+ A = DArray(I->rand(Bool, length.(I)), (20,20))
+
+using Pkg; Pkg.add("Colors")
+using Colors
+ Gray.(A)
+
+ B = Copy(A)
+ B = Gray.(life_step(B))
