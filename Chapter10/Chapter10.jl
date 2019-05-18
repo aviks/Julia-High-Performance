@@ -109,7 +109,7 @@ x=[rand(100,100) for i in 1:10];
     return n
 end
 
-function distributed_pi(N, loops)
+function pi_distributed(N, loops)
     n = sum(pmap((x)->darts_in_circle(N), 1:loops))
     4 * n / (loops * N)
 end
@@ -119,9 +119,9 @@ function pi_serial(n)
 end
 
 
-@btime distributed_pi(1_000_000, 50)
+@btime pi_distributed(1_000_000, 50)
 
-julia> @btime serial_pi(50_000_000)
+@btime pi_serial(50_000_000)
 
 # ## Distributed Arrays
 
@@ -151,11 +151,10 @@ fetch(r)
 
 
 @distributed (+) for i in 1:nworkers()
-           sum(localpart(m))
-       end
+   sum(localpart(m))
+end
 
 # ### Game of Life
-
 
 function life_step(d::DArray)
    DArray(size(d),procs(d)) do I
@@ -192,25 +191,23 @@ end
     new
 end
 
-
 A = DArray(I->rand(Bool, length.(I)), (20,20))
 
 using Pkg; Pkg.add("Colors")
 using Colors
- Gray.(A)
+Gray.(A)
 
- B = Copy(A)
- B = Gray.(life_step(B))
+B = copy(A)
+B = Gray.(life_step(B))
 
- # # Shared Arrays
- using SharedArrays
- S=SharedArray{Float64}((100, 100, 5), pids=[2,3, 4, 5]);
+# # Shared Arrays
+using SharedArrays
+S=SharedArray{Float64}((100, 100, 5), pids=[2,3, 4, 5]);
 
 
- pmap(x->S[x]=myid(), eachindex(S));
+pmap(x->S[x]=myid(), eachindex(S));
 
- S
-
+S
 
 # ## Parallel Prefix sum
 
