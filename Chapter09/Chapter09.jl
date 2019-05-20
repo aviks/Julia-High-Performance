@@ -67,7 +67,7 @@ end
 
 using Base.Threads
 
-const rnglist = [MersenneTwister() for i in 1:nthreads()]
+const rnglist = [MersenneTwister() for i in 1:nthreads()];
 
 function pi_threads(n, loops)
    inside = zeros(Int, loops)
@@ -139,13 +139,13 @@ end
 
 const f = open(tempname(), "a+")
 
-const m = Base.Threads.Mutex();
+const mt = Base.Threads.Mutex();
 
 @threads for i in 1:50
      r = pi_serial(10_000_000)
-     lock(m)
+     lock(mt)
      write(f, "From $(threadid()), pi = $r\n")
-     unlock(m)
+     unlock(mt)
 end
 
 
@@ -184,10 +184,10 @@ function matmul_thread(x)
    @threads for i in eachindex(x)
       @inbounds first_num[i] = (x[i]'*x[i])[1]
    end
-return first_num
+   return first_num
 end
 
-m = [rand(1000, 1000) for _ in 1:100];
+m = [rand(1000, 1000) for _ in 1:10];
 
 @btime matmul_serial(m);
 
