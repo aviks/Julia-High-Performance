@@ -174,10 +174,10 @@ m = Chain(
  Dense(90, 10), softmax)
 
  loss(x, y) = crossentropy(m(x), y)
-accuracy(x, y) = mean(onecold(m(x)) .== onecold(y))
-opt = ADAM(Flux.params(m), )
-Flux.train!(loss, train[1:1], opt)
-@show(accuracy(tX, tY))
+ accuracy(x, y) = mean(onecold(m(x)) .== onecold(y))
+ opt = ADAM()
+ @time Flux.train!(loss, Flux.params(m), train[1:10], opt)
+ @show(accuracy(tX, tY))
 
 gputrain = gpu.(train[1:10])
 gpum = gpu(m)
@@ -185,9 +185,9 @@ gputX = gpu(tX)
 gputY = gpu(tY)
 gpuloss(x, y) = crossentropy(gpum(x), y)
 gpuaccuracy(x, y) = mean(onecold(gpum(x)) .== onecold(y))
-gpuopt = ADAM(Flux.params(gpum), )
-Flux.train!(gpuloss, gpu.(train[1:1]), gpuopt, cb = () -> @show(gpuaccuracy(gputX, gputY)))
-@time Flux.train!(gpuloss, gputrain, gpuopt, cb = () -> @show(gpuaccuracy(gputX, gputY)))
+gpuopt = ADAM()
+Flux.train!(gpuloss, Flux.params(gpum), gpu.(train[1:1]), opt)
+@time Flux.train!(gpuloss, Flux.params(gpum), gputrain, opt)
 
 
 # ## ArrayFire
