@@ -49,13 +49,13 @@ x = rand(Int32)
 
 y = rand(Int32)
 
- @btime $(BigInt(y)) * $(BigInt(x)) ;
+@btime $(BigInt(y)) * $(BigInt(x)) ;
 
- @btime $(Int64(y)) * $(Int64(x)) ;
+@btime $(Int64(y)) * $(Int64(x)) ;
 
- @btime $(Int128(y)) * $(Int128(x)) ;
+@btime $(Int128(y)) * $(Int128(x)) ;
 
- @btime $(Int32(y)) * $(Int32(x)) ;
+@btime $(Int32(y)) * $(Int32(x)) ;
 
 # ## Floating Point
 
