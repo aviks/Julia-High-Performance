@@ -1,6 +1,8 @@
 # # Chapter 5
 
-WORD_SIZE
+using BenchmarkTools
+
+Sys.WORD_SIZE
 
 bitstring(3)
 
@@ -25,10 +27,13 @@ typemin(Int64)
 
 bitstring(typemin(Int32))
 
-
 9223372036854775806 + 1
 
 9223372036854775806 + 1 + 1
+
+2^62
+
+2^63
 
 2^64
 
@@ -39,6 +44,18 @@ bitstring(typemin(Int32))
 big(9223372036854775806) + 1 + 1
 
 big(2)^64
+
+x = rand(Int32)
+
+y = rand(Int32)
+
+ @btime $(BigInt(y)) * $(BigInt(x)) ;
+
+ @btime $(Int64(y)) * $(Int64(x)) ;
+
+ @btime $(Int128(y)) * $(Int128(x)) ;
+
+ @btime $(Int32(y)) * $(Int32(x)) ;
 
 # ## Floating Point
 
@@ -54,6 +71,7 @@ floatbits(2.5)
 
 floatbits(-2.5)
 
+# ## Floating point accuracy
 
 0.1 > 1//10
 
@@ -72,13 +90,16 @@ floatbits(0.1)
 
 floatbits(nextfloat(0.1))
 
-
-# ##Unchecked conversions
+# ## Unsigned Integers
 
 UInt64(1)
-UInt32(4294967297)
+
+UInt32(4294967297)   # throws InexactError
+
 4294967297 % UInt32
+
 @btime UInt32(1)
+
 @btime 1 % UInt32
 
 
@@ -106,20 +127,39 @@ end
 
 t=rand(2000);
 @btime sum_diff($t)
+
 @btime sum_diff_fast($t)
 
 macroexpand(Main, :(@fastmath a + b / c))
 
+half_fast(x) = @fastmath 0.5*x
+
+double_fast(x) = @fastmath 2.0*x
+
+const c_fast = (half_fast ∘ double_fast)
+
+@code_llvm c_fast(0.0)
+
+half(x) = 0.5*x
+double(x) = 2*x
+c(x) = half(double(x))
+
+@code_llvm c(0.0)
+
+
+
 # ## KBN Summation
 
-sum([1 1e-100 -1])
+t=[1, -1, 1e-100];
 
+sum(t)
+
+using Pkg
+Pkg.add("KahanSummation")
 using KahanSummation
 
-sum_kbn([1 1e-100 -1])
+sum_kbn(t)
 
-
-t=[1, -1, 1e-100];
 
 @btime sum($t)
 
