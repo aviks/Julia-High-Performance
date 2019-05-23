@@ -1,7 +1,8 @@
-# # Chapter 4
+# # Chapter 4 : Functions
+
 using BenchmarkTools
 
-##Globals
+# #Globals
 
 p = 2
 
@@ -73,6 +74,8 @@ function f(x)
     end
 end
 
+@code_typed g(3)
+
 @inline function f_in(x)
     a=x*5
     b=a+3
@@ -88,6 +91,9 @@ end
 
 g_in(x) = f_in(2*x)
 
+@code_typed g_in(3)
+
+# ## Disabling inlining
 
 @noinline function f_ni(x)
     a=x*5
@@ -106,7 +112,9 @@ sqr2() = sqr(2)
 
 @code_typed sqr2()
 
-#Macros
+# # Macros
+
+# ## Evaluating a Polynomial
 
 function poly_naive(x, a...)
   p=zero(x)
@@ -121,7 +129,9 @@ f_naive(x) = poly_naive(x, 1,2,3,4,5)
 
 x=3.5
 
-@btime f_naive(3.5)
+@btime f_naive($x)
+
+# ## Horner's method
 
 function poly_horner(x, a...)
   b=zero(x)
@@ -135,6 +145,8 @@ f_horner(x) = poly_horner(x, 1,2,3,4,5)
 
 @btime f_horner($x)
 
+# ## Horner Macro
+
 macro horner(x, p...)
     ex = esc(p[end])
     for i = length(p)-1:-1:1
@@ -147,7 +159,7 @@ f_horner_macro(x) = @horner(x, 1,2,3,4,5,6,7,8,9,10)
 
 @btime f_horner_macro($x)
 
-# Generated Functions
+# # Generated Functions
 
 function prod_dim(x::Array{T, N}) where {T, N}
     s = 1
@@ -177,7 +189,16 @@ function prod_dim_gen_impl(x::Array{T, N}) where {T,N}
     return ex
 end
 
-#Keyword arguments
+x = rand(10, 5, 5);
+
+prod_dim_gen_impl(x)
+
+x = rand(10, 5, 5, 2);
+
+prod_dim_gen_impl(x)
+
+
+# ## Keyword arguments
 named_param(x; y=1, z=1) = x^y + x^z
 
 pos_param(x,y,z) = x^y + x^z
