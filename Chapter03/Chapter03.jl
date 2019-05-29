@@ -1,4 +1,4 @@
-# # Chapter 1
+# # Chapter 3
 
 # ## Using Types
 using BenchmarkTools
@@ -19,7 +19,7 @@ iam(1)
 
 iam("1")
 
-iam(1.5)
+iam(1.5)  # throws method error
 
 # ## Multiple Dispatch
 sumsqr(x, y) = x^2 + y^2
@@ -42,7 +42,7 @@ end
 
 p = Pixel(5,5, 100)
 
-p.x = 10;
+p.x = 10; # throws ERROR
 
 p.x
 
@@ -114,14 +114,19 @@ typeof(pos_fixed(-2.4))
 typeof(pos_fixed(-2))
 
 @btime pos(2.5)
+
 @btime pos_fixed(2.5)
 
 @code_warntype pos(2.5)
+
 @code_warntype pos_fixed(2.5)
+
 @code_llvm pos(2.5)
+
 @code_llvm pos_fixed(2.5)
 
 @code_native pos(2.5)
+
 @code_native pos_fixed(2.5)
 
 # Loop variables
@@ -150,6 +155,13 @@ end
 @btime sumsqrtn(1000_000)
 
 @btime sumsqrtn_fixed(1000_000)
+
+function simdsum(x) s= 0
+  @simd for v in x
+      s += v
+  end
+  return s 
+end
 
 #Kernel Methods
 
