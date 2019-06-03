@@ -160,8 +160,22 @@ function simdsum(x) s= 0
   @simd for v in x
       s += v
   end
-  return s 
+  return s
 end
+
+
+function simdsum_fixed(x)
+    s = zero(eltype(x))
+    @simd for v in A
+        s += v
+    end
+    return s
+end
+
+a = rand(Float32, 10^6);
+@btime simdsum(a)
+
+@btime simdsum_fixed(a)
 
 #Kernel Methods
 
@@ -200,6 +214,7 @@ end
 ## Arrays
 
 a = Int64[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
 b = Number[1,2,3,4,5,6,7,8,9,10]
 
 function arr_sumsqr(x::Array{T}) where T <: Number
