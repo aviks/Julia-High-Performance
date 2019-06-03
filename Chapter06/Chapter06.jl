@@ -58,13 +58,12 @@ b=Array{String}(undef, 2, 2)
 
 b[1,1]  # Will throw UndefRefError
 
+## Bounds Checking
 
- ## Bounds Checking
-
- function prefix_bounds(a, b)
-      for i in 2:size(a, 1)
-            a[i] = b[i-1] + b[i]
-      end
+function prefix_bounds(a, b)
+  for i in 2:size(a, 1)
+        a[i] = b[i-1] + b[i]
+  end
 end
 
 
@@ -128,9 +127,9 @@ end
 
 # ## Mutating FUnctions
 
- @btime sort(a);
+@btime sort(a);
 
- @btime sort!(a);
+@btime sort!(a);
 
 # # Broadcasting
 
@@ -146,7 +145,7 @@ a = collect(1:10);
 
 b = fill(0.0, 10);
 
-b .= cos.(sin.(A))
+b .= cos.(sin.(a))
 
 @time b .= cos.(sin.(a));
 
@@ -173,6 +172,8 @@ function sum_cols_matrix(x::Array{Float64, 2})
    end
    return s
 end
+
+a = rand(1000, 1000)
 
 @benchmark sum_cols_matrix($a)
 
@@ -229,7 +230,7 @@ c= rand(Float32, 1_000_000);
 # ## SIMD.jl
 
 using Pkg
-Pkg.add("SIMD.jl")
+Pkg.add("SIMD")
 
 using SIMD
 
@@ -269,20 +270,21 @@ Pkg.add("StaticArrays")
 
 using StaticArrays
 a=SVector(1, 2, 3, 4)
-b = @SVector [3, 4, 5, 6
+b = @SVector [3, 4, 5, 6]
 
 c=[1,2,3,4];
 
 @btime $c*$c'
 
- @btime $a*$a'
+@btime $a*$a'
 
- @btime $(Ref(a))[] * $(Ref(a'))[]
+@btime $(Ref(a))[] * $(Ref(a'))[]
 
 # ## Struct Of Arrays
 
 using Pkg
 Pkg.add("StructArrays")
+using StructArrays
 
 a=Complex.(rand(1000000), rand(1000000))
 
@@ -363,6 +365,6 @@ function mysum_eachindex(a::AbstractArray)
     for i in eachindex(a)
         s = s + a[i]
     end
-end 
+end
 
 @btime mysum_eachindex(@view reshape(1:1000000, 1000, 1000)[1:500, 1:500] )
