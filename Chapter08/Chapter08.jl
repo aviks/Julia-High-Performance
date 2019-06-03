@@ -37,8 +37,6 @@ schedule(t)
 
 istaskstarted(t)
 
-schedule(t)
-
 istaskdone(t)
 
 istaskstarted(t)
