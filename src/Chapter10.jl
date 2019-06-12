@@ -1,6 +1,6 @@
 using BenchmarkTools
 
-# ## Starting a Cluster
+# ### Starting a Cluster
 using Distributed
 procs()
 
@@ -11,7 +11,7 @@ procs()
 
 # addprocs(["10.0.2.1", "10.0.2.2"]) ;
 
-# ## Communication between Julia processes
+# ### Communication between Julia processes
 
 a = remotecall(sqrt, 2, 4.0)
 
@@ -22,7 +22,7 @@ fetch(a)
 remotecall_fetch(sqrt, 2, 4.0)
 
 
-# # Programming parallel tasks
+# ## Programming parallel tasks
 
 using Pkg
 Pkg.add("Distributions")
@@ -32,7 +32,7 @@ using Distributions  # precompile
 
 @everywhere println(rand(Normal()))
 
-# ## @spawn macro
+# ### @spawn macro
 
 a=@spawn randn(5,5)^2
 
@@ -56,7 +56,7 @@ end;
    fetch(Bref)
 end;
 
-# ## @spawnat
+# ### @spawnat
 
 r = remotecall(rand, 2, 2, 2)
 
@@ -66,7 +66,7 @@ fetch(s)
 
 
 
-# ## @parallel for
+# ### @parallel for
 
 function serial_add()
     s=0.0
@@ -86,7 +86,7 @@ end
 
 @btime parallel_add()
 
-# ## Parallel map
+# ### Parallel map
 
 x=[rand(100,100) for i in 1:10];
 
@@ -97,7 +97,7 @@ x=[rand(100,100) for i in 1:10];
 @btime pmap(svd, x);
 
 
-# ## Distributed Monte Carlo
+# ### Distributed Monte Carlo
 
 @everywhere function darts_in_circle(N)
     n = 0
@@ -123,7 +123,7 @@ end
 
 @btime pi_serial(50_000_000)
 
-# ## Distributed Arrays
+# ### Distributed Arrays
 
 using Pkg
 Pkg.add("DistributedArrays")
@@ -154,7 +154,7 @@ fetch(r)
    sum(localpart(m))
 end
 
-# ### Game of Life
+# #### Game of Life
 
 function life_step(d::DArray)
    DArray(size(d),procs(d)) do I
@@ -200,7 +200,7 @@ Gray.(A)
 B = copy(A)
 B = Gray.(life_step(B))
 
-# # Shared Arrays
+# ## Shared Arrays
 using SharedArrays
 S=SharedArray{Float64}((100, 100, 5), pids=[2,3, 4, 5]);
 
@@ -209,7 +209,7 @@ pmap(x->S[x]=myid(), eachindex(S));
 
 S
 
-# ## Parallel Prefix sum
+# ### Parallel Prefix sum
 
 function prefix_shared!(y::SharedArray)
     l=length(y)

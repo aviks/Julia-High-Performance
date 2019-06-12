@@ -1,4 +1,4 @@
-# # Chapter 7
+# ## Chapter 7
 
 ;nvidia-smi
 
@@ -9,7 +9,7 @@ Pkg.add("CUDAnative");
 Pkg.add("CuArrays");
 Pkg.add("CUDAdrv");
 
-# ## CUDAnative
+# ### CUDAnative
 
 using CUDAnative
 function cudaprint(n)
@@ -26,7 +26,7 @@ function cudaprint(n)
 
  @device_code_lowered @cuda cudaprint(10)
 
- # # CuArrays
+ # ## CuArrays
 
 
  using CuArrays
@@ -35,7 +35,7 @@ function cudaprint(n)
 
  b = a.^2 .- a.*2 .+ sqrt.(a)
 
-# ## Monte Carlo simulations on the GPU
+# ### Monte Carlo simulations on the GPU
 
 using CuArrays.CURAND
 
@@ -62,7 +62,7 @@ end
 
 @btime pi_gpu32(10_000_000)
 
-# ## Writing your own kernels
+# ### Writing your own kernels
 
 function add_gpu!(y, x)
    index = threadIdx().x
@@ -78,7 +78,7 @@ a = cufill(1.0f0, N)
 b = cufill(2.0f0, N)
 @cuda threads=256 add_gpu!(b, a)
 
-# ## Measuring GPU Performance
+# ### Measuring GPU Performance
 
 a = CuArray{Float32}(undef, 1024);
 
@@ -88,9 +88,9 @@ a = CuArray{Float32}(undef, 1024);
 
 CuArrays.@time pi_gpu(10_000_000)
 
-# ## Performance Tips
+# ### Performance Tips
 
-# ### Scalar Iteration
+# #### Scalar Iteration
 
 function addcol_scalar(a, b)
    s = size(a)
@@ -120,7 +120,7 @@ CuArrays.allowscalar(false)
 
 addcol_scalar(CuArray(a), CuArray(b))  # Will Error!
 
-# ### Combine kernels
+# #### Combine kernels
 
 function addcol_faster(a, b)
    a .= @views b[:, 2:end] .+ b[:, 1:end-1]
@@ -130,7 +130,7 @@ end
 
 @btime addcol_faster($(CuArray(a)), $(CuArray(b))) ;
 
-# ### Process more data
+# #### Process more data
 
 a = ones(Float32,1000_000, 99);
 
@@ -141,7 +141,7 @@ b = ones(Float32, 1000_000, 100);
 @btime addcol_faster($(CuArray(a)), $(CuArray(b))) ;
 
 
-# ## Deep learning on the GPU
+# ### Deep learning on the GPU
 
 using Pkg
 Pkg.add("Flux")
@@ -190,7 +190,7 @@ Flux.train!(gpuloss, Flux.params(gpum), gpu.(train[1:1]), opt)
 @time Flux.train!(gpuloss, Flux.params(gpum), gputrain, opt)
 
 
-# ## ArrayFire
+# ### ArrayFire
 
 Pkg.add("ArrayFire")
 using ArrayFire

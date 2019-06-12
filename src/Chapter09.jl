@@ -2,7 +2,7 @@ using BenchmarkTools
 
 versioninfo(verbose=true)
 
-# ## HWloc
+# ### HWloc
 using Pkg
 Pkg.add("Hwloc")
 
@@ -10,7 +10,7 @@ using Hwloc
 Hwloc.num_physical_cores()
 
 
-# ##Starting Threads
+# ###Starting Threads
 
 using Base.Threads
 nthreads()
@@ -23,13 +23,13 @@ for i in 1:nthreads()
 end
 a
 
-# ## The @Threads macro
+# ### The @Threads macro
     @threads for i in 1:nthreads()
                a[threadid()] = threadid()
            end
 
 
-# ### Prefix sum
+# #### Prefix sum
 
 function prefix_threads!(y)
     l=length(y)
@@ -47,9 +47,9 @@ function prefix_threads!(y)
     y
 end
 
-# # Thread Safety
+# ## Thread Safety
 
-# ## Monte Carlo
+# ### Monte Carlo
 using Random
 function darts_in_circle(n, rng=Random.GLOBAL_RNG)
    inside = 0
@@ -84,7 +84,7 @@ pi_threads(2_500_000, 4)
 
  @btime pi_threads(2_500_000, 4)
 
- # ## Atomics
+ # ### Atomics
 
  function sum_thread_base(x)
    r = zero(eltype(x))
@@ -135,7 +135,7 @@ end
 
 @btime sum_thread_split($a)
 
-# ## Synchronisation primitives
+# ### Synchronisation primitives
 
 const f = open(tempname(), "a+")
 
@@ -160,7 +160,7 @@ const s = Base.Semaphore(2);
    Base.release(s)
 end
 
-# # Threaded libraries
+# ## Threaded libraries
 
 a = rand(1000, 1000);
 
@@ -168,7 +168,7 @@ b = rand(1000, 1000);
 
 @btime $a*$b;
 
-# ## Oversubscriptions
+# ### Oversubscriptions
 
 function matmul_serial(x)
    first_num = zeros(length(x))

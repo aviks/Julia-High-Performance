@@ -1,6 +1,6 @@
-# # Chapter 3
+# ## Chapter 3
 
-# ## Using Types
+# ### Using Types
 using BenchmarkTools
 
 # Declare type of function argument
@@ -21,7 +21,7 @@ iam("1")
 
 iam(1.5)  # throws method error
 
-# ## Multiple Dispatch
+# ### Multiple Dispatch
 sumsqr(x, y) = x^2 + y^2
 
 sumsqr(1, 2)

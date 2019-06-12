@@ -1,4 +1,4 @@
-# # Chapter 5
+# ## Chapter 5
 
 using BenchmarkTools
 
@@ -39,7 +39,7 @@ bitstring(typemin(Int32))
 
 2^65
 
-# ##BigInt
+# ###BigInt
 
 big(9223372036854775806) + 1 + 1
 
@@ -57,7 +57,7 @@ y = rand(Int32)
 
 @btime $(Int32(y)) * $(Int32(x)) ;
 
-# ## Floating Point
+# ### Floating Point
 
 bitstring(2.5)
 bitstring(-2.5)
@@ -71,7 +71,7 @@ floatbits(2.5)
 
 floatbits(-2.5)
 
-# ## Floating point accuracy
+# ### Floating point accuracy
 
 0.1 > 1//10
 
@@ -90,7 +90,7 @@ floatbits(0.1)
 
 floatbits(nextfloat(0.1))
 
-# ## Unsigned Integers
+# ### Unsigned Integers
 
 UInt64(1)
 
@@ -103,7 +103,7 @@ UInt32(4294967297)   # throws InexactError
 @btime 1 % UInt32
 
 
-# ## FastMath
+# ### FastMath
 
 function sum_diff(x)
     n = length(x); d = 1/(n-1)
@@ -148,7 +148,7 @@ c(x) = half(double(x))
 
 
 
-# ## KBN Summation
+# ### KBN Summation
 
 t=[1, -1, 1e-100];
 
@@ -166,7 +166,7 @@ sum_kbn(t)
 
 @btime sum_kbn($t)
 
-# ## Subnormal numbers
+# ### Subnormal numbers
 
 issubnormal(1.0)
 

@@ -1,6 +1,6 @@
-# # Chapter 2
+# ## Chapter 2
 
-# ## Timing Julia
+# ### Timing Julia
 # `@time` is the simplest way to measure execution times
 @time sqrt.(rand(1000));
 
@@ -23,7 +23,7 @@ sum(@time sqrt.(rand(1000)))
 using Test
 @test @elapsed(sqrt.(rand(1000))) <= 10e-4
 
-# ## Profiling
+# ### Profiling
 
 # Load the `Profile` stdlib module
 using Profile
@@ -65,7 +65,7 @@ using ProfileView
 ProfileView.view()
 ProfileView.svgwrite("profile_results.svg")
 
-# ## Statistically significant benchmarking
+# ### Statistically significant benchmarking
 # `]add BenchmarkTools` to add the package
 Pkg.add("BenchmarkTools")
 using BenchmarkTools

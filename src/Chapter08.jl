@@ -29,7 +29,7 @@ end
     @async ccall(("sleep", :libc), Cint, (Cint, ), 1)
 end
 
-# ## Task Lifecycle
+# ### Task Lifecycle
 
 t=Task(()->println("Hello from tasks"))
 
@@ -45,13 +45,13 @@ current_task()
 
 t == current_task()
 
-# ## Task local storage
+# ### Task local storage
 
 task_local_storage("x", 1)
 
 task_local_storage("x") == 1
 
-# # Communicating between tasks
+# ## Communicating between tasks
 
 c = Channel{Int}(10)
 
@@ -72,7 +72,7 @@ take!(chnl)
 take!(chnl)
 take!(chnl)
 
-# ## Task Iteration
+# ### Task Iteration
 
 chnl = Channel(producer)
 for i in chnl

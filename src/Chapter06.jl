@@ -4,9 +4,9 @@
 
 using BenchmarkTools
 
-# #Array Internals
+# ##Array Internals
 
-# ## Column wise storage
+# ### Column wise storage
 
 function col_iter(x)
     s=zero(eltype(x))
@@ -34,7 +34,7 @@ a = rand(1000, 1000);
 
 @btime row_iter($a)
 
-# ### Adjoints
+# #### Adjoints
 
 a = rand(1000, 1000);
 
@@ -44,7 +44,7 @@ b=a'
 
 @btime row_iter($b)
 
-# ## Array initialization
+# ### Array initialization
 
 a = fill(1, 4, 4)
 
@@ -81,7 +81,7 @@ b=rand(1000);
 
 @btime prefix_inbounds($a, $b)
 
-# # In place operations
+# ## In place operations
 
 function xpow(x)
    return [x x^2 x^3 x^4]
@@ -97,7 +97,7 @@ end
 
 @btime xpow_loop($1000000)
 
-# ## Preallocating function output
+# ### Preallocating function output
 
 function xpow!(result::Array{Int, 1}, x)
     @assert length(result) == 4
@@ -125,13 +125,13 @@ end
 @btime sort(a);
 @btime sort!(a);
 
-# ## Mutating FUnctions
+# ### Mutating FUnctions
 
 @btime sort(a);
 
 @btime sort!(a);
 
-# # Broadcasting
+# ## Broadcasting
 
 a=collect(1:4);
 
@@ -154,7 +154,7 @@ b .= cos.(sin.(a))
 
 
 
-# # Array Views
+# ## Array Views
 
 function sum_vector(x::Array{Float64, 1})
    s = zero(eltype(x))
@@ -197,7 +197,7 @@ end
 @benchmark sum_cols_matrix_views($a)
 
 
-# # SIMD Parallelization
+# ## SIMD Parallelization
 
 function sum_vectors!(x, y, z)
     n = length(x)
@@ -227,7 +227,7 @@ c= rand(Float32, 1_000_000);
 
 @code_native sum_vectors_simd!(a, b, c)
 
-# ## SIMD.jl
+# ### SIMD.jl
 
 using Pkg
 Pkg.add("SIMD")
@@ -261,9 +261,9 @@ function vadd!(xs::Vector{T}, ys::Vector{T}, ::Type{Vec{N,T}}) where {N, T}
     end
 end
 
-# # Specialised Array Types
+# ## Specialised Array Types
 
-# ## Static Arrays
+# ### Static Arrays
 
 using Pkg
 Pkg.add("StaticArrays")
@@ -280,7 +280,7 @@ c=[1,2,3,4];
 
 @btime $(Ref(a))[] * $(Ref(a'))[]
 
-# ## Struct Of Arrays
+# ### Struct Of Arrays
 
 using Pkg
 Pkg.add("StructArrays")
@@ -315,7 +315,7 @@ end
 
 @btime accum($b, 1.5 + 2.5im)
 
-# # Yeppp
+# ## Yeppp
 
 using Pkg
 Pkg.add("Yeppp")
@@ -329,7 +329,7 @@ a=rand(1_000_000);
 
 @btime Yeppp.log!($a)
 
-# # Generic array functions
+# ## Generic array functions
 
 function mysum_linear(a::AbstractArray)
     s=zero(eltype(a))
